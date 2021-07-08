@@ -64,13 +64,13 @@ class PatientStateController extends Controller
      */
     public function show($id)      // PatientState $patientState
     {
-        // Con Query Builder
+        // With Query Builder
         /*
         $patientStates = DB::select('SELECT * FROM patient_states WHERE patient_id = ?', [$id]);
         return $patientStates;
         */
 
-        // Con Eloquent ORM
+        // With Eloquent ORM
         $patientStates = PatientState::where('patient_id', $id)->get();
         return $patientStates;
 
@@ -96,28 +96,8 @@ class PatientStateController extends Controller
      */
     public function update(Request $request, $patient, $patientstatedate)         // PatientState $patientState
     {
-        //$patientState = DB::select('SELECT * FROM patient_states WHERE patient_id = ? AND date = ?', [$patient, $patientstatedate]);
-        // Lo que devuelve  DB::select()  no es una instancia de ningún modelo, Query Builder de Laravel no es Eloquent ORM donde los métodos estáticos de los modelos permiten consultar la BD e inicializar con los datos recuperados una instancia del modelo en cuestión.
-        // https://laracasts.com/discuss/channels/eloquent/how-can-i-get-object-with-query-builder-in-laravel
-        // Query builder solo devuelve un objeto o array de objetos como datos, no son instancias.
-        // Con lo cual, no podemos acceder a ninguna propiedad de estos para asignarles los valores recibidos.
-        // Para eso se debería crear una instancia e ir asignando los valores del objeto recibido? Pero tendría el mismo problema de no poder acceder a las propiedades del objeto?
-        // $patientState = new PatientState();
-        /*
-        $patientState->weight = $request->input('weight');
-        $patientState->IMC = $request->input('IMC');
-        $patientState->muscle_mass = $request->input('musclemass');
-        $patientState->fat_mass = $request->input('fatmass');
-        $patientState->blood_pressure = $request->input('bloodpressure');
-        $patientState->cholesterol = $request->input('cholesterol');
 
-        $patientState->save();
-        */
-
-        //return $patientState;
-        //return $request->input('weight');
-
-
+        // Query multiple id with Query Builder
         $affected = DB::table('patient_states')       // $affected:  The number of rows affected by the statement will be returned
             ->where([
                 ['patient_id', '=', $patient],
@@ -133,8 +113,28 @@ class PatientStateController extends Controller
                     'cholesterol' => $request->input('cholesterol'),
                 ]);
 
-        ///////////
-        /*                          // <<---  No funciona usando Eloquent ORM
+        // Incorrect use of Query Builder with Raw SQL
+        /*
+        $patientState = DB::select('SELECT * FROM patient_states WHERE patient_id = ? AND date = ?', [$patient, $patientstatedate]);
+        return $patientState;
+        // What DB::select() returns is not an instance of any model, Laravel's Query Builder is not Eloquent ORM where the static methods of the models allow to query the DB and initialize with the retrieved data an instance of the model in question.
+        // https://laracasts.com/discuss/channels/eloquent/how-can-i-get-object-with-query-builder-in-laravel
+        // DB::select() only returns an object or array of objects as data, they are not instances. With which, we cannot access any property of these to assign the received values to them.
+
+        // It is not correct to create a new instance and assign the values of the received object because it could not access the properties of the instance because they do not exist yet.
+        $patientState = new PatientState();
+        $patientState->weight = $request->input('weight');
+        $patientState->IMC = $request->input('IMC');
+        $patientState->muscle_mass = $request->input('musclemass');
+        $patientState->fat_mass = $request->input('fatmass');
+        $patientState->blood_pressure = $request->input('bloodpressure');
+        $patientState->cholesterol = $request->input('cholesterol');
+        $patientState->save();
+        */
+
+
+        // Doesn't work using Eloquent ORM
+        /*
         $patientState = PatientState::where([
             ['patient_id', '=', $patient],
             ['date', '=', $patientstatedate],

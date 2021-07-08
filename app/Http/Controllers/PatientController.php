@@ -47,12 +47,9 @@ class PatientController extends Controller
      */
     public function show(Request $request)           // $name, $surname, $checked   // Patient $patient
     {
-        //return($request->name);
-        //return($request);
-
         // Search for name
         if (!$request->surname && !$request->checked) {
-            //return('solo name');
+            //return('only name');
             $patients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, p.height, u.email
                                           FROM users u JOIN patients p ON u.id = p.user_id
 
@@ -63,7 +60,7 @@ class PatientController extends Controller
 
         // Search for surname
         if (!$request->name && !$request->checked) {
-            //return('solo surname');
+            //return('only surname');
             $patients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, p.height, u.email
                                           FROM users u JOIN patients p ON u.id = p.user_id
 
@@ -74,7 +71,7 @@ class PatientController extends Controller
 
         // Search for pending to check (checked == false)
         if (!$request->name && !$request->surname) {
-            //return('solo checked');
+            //return('only checked');
             $patients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, p.height, u.email, ps.checked AS last_status_checked, max(ps.date)
                                           FROM users u JOIN patients p ON u.id = p.user_id
                                                        JOIN patient_states ps ON p.user_id = ps.patient_id

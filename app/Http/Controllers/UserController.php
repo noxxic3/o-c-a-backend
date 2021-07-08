@@ -44,20 +44,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request;
-        //return $request->input('user_name');
-        //return $request->input('user_image');    // Es un objeto, pero si lo retornamos retorna una string vacía.
-        //return $request->file('user_image');     // Nombre ruta completa archivo temporal subido al servidor:  "C:\\wamp64\\tmp\\phpE099.tmp"
-        //return $request->file('user_image')->getClientOriginalName();    // Nombre del archivo original tal como lo subió el usuario.
+        //return $request->input('user_image');    // It is an object, but if we return it, it returns an empty string.
+        //return $request->file('user_image');     // Full path name of temporary file uploaded to the server:  "C:\\wamp64\\tmp\\phpE099.tmp"
+        //return $request->file('user_image')->getClientOriginalName();    // Name of the original file as uploaded by the user.
 
-        ////////////////////////////////////////////////////////////////       // ***********
 
         // Handle File Upload
-        if( $request->hasFile('user_image') ){                                     // Verificamos si hay archivo, ya que puede ser que el usuario no haya adjuntado nada en el campo para archivo del formulario
+        if( $request->hasFile('user_image') ){                                     // Check if there is a file
             // Get the filename with the extension, for example:   nameImage.jpg
             $fileNameWithExt = $request->file('user_image')->getClientOriginalName();
             // Get just filename, for example:   nameImage
-            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo()  es una función de PHP, no de Laravel. Extract the fileName without the extension
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo() is PHP, not Laravel. Extract the fileName without the extension
             // Get just extension, for example:   .jpg
             $extension = $request->file('user_image')->getClientOriginalExtension();
             // FileName to store
@@ -68,10 +65,7 @@ class UserController extends Controller
             $fileNameToStore = 'noImage.svg';
         }
 
-        ////////////////////////////////////////////////////////////////
-
-
-        // Aquí se hará una inserción 'combinada' (a 2 tablas, como las consultas combinadas) con la tabla User + una de las subtablas dependiendo del rol
+        // Next, a 'combined' insert will be made (to 2 tables, like the combined queries) with the User table plus one of the subtables depending on the role.
 
         // Insert into User
         $user = new User();
@@ -82,28 +76,24 @@ class UserController extends Controller
         $user->password = $request->input('user_password');
         $user->save();
 
-        // Select last register from User to get the last id (the id of the user that we have just inserted)
+        // Select the last record from User in order to get the last id (the id of the user that we have just inserted)
         $user_id = DB::select('SELECT id FROM users WHERE id = (SELECT max(id) FROM users)');
-        //return $user_id[0];    //<-- da error
 
-        // Además, debemos gestionar el archivo en el caso del Patient
+        // If User is Patient
         if($request->role_name == 'Patient'){
-            //return 'el rol recibido es '.$request->role_name;
-
             // Insert into Patient
             $patient = new Patient();
             $patient->user_id = $user_id[0]->id;
             $patient->height = $request->input('patient_height');
             $patient->role_name = $request->input('role_name');
             $patient->save();
-
-            $user->image = $fileNameToStore;      // 'AAAAAAA';    //$request->input('user_image');    // ***********
+            // We must manage the image file in the case of the Patient role
+            $user->image = $fileNameToStore;      // $request->input('user_image');
             $user->save();
         }
 
+        // If User is Doctor
         if($request->role_name == 'Doctor'){
-            //return 'el rol recibido es '.$request->role_name;
-
             // Insert into Doctor
             $doctor = new Doctor();
             $doctor->user_id = $user_id[0]->id;
@@ -112,9 +102,8 @@ class UserController extends Controller
             $doctor->save();
         }
 
+        // If User is OfficeStaff
         if($request->role_name == 'OfficeStack'){
-            //return 'el rol recibido es '.$request->role_name;
-
             // Insert into OfficeStack
             $officeStack = new OfficeStack();
             $officeStack->user_id = $user_id[0]->id;
@@ -122,9 +111,8 @@ class UserController extends Controller
             $officeStack->save();
         }
 
+        // If User is Admin
         if($request->role_name == 'Admin'){
-            //return 'el rol recibido es '.$request->role_name;
-
             // Insert into Admin
             $admin = new Admin();
             $admin->user_id = $user_id[0]->id;
@@ -141,54 +129,40 @@ class UserController extends Controller
      */
     public function show(Request $request)          // $id
     {
-        /*  // Esta consulta era una prueba por si lo que se recibía era solo el ID como parámetro de ruta
-        //$user = User::find($id);
-        //return $user->patient;               // <<--- Al haber quitado las asociaciones del Eloquent ORM en el Modelo, ya no podemos consultar el Patient asociado al User desde la instancia User, pero sí podemos consultar al User.
-        //return $user;
-
-        //$users = DB::select('SELECT * FROM users u JOIN patients p ON u.id = p.user_id WHERE p.role_name = ?', [$id]);    // http://localhost/8_TFG/ObesityControlApp/public/api/users/Patient
-        $users = DB::select('SELECT * FROM users u JOIN patients p ON u.id = p.user_id WHERE u.id = ?', [$id]);      // http://localhost/8_TFG/ObesityControlApp/public/api/users/1
-        return $users;           // <<--  Array con objetos que el frontend recorre los elementos (objetos) del array
-        */
-
-        //return $request;
-        ////////////////////////////////////////////////////
-
 
         // Search by Name
         if (!$request->surname) {
-            //return 'Only name';
 
-            //$users = búsqueda combinada Users + Patients
+            // Combined query Users + Patients
             $usersPatients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, p.role_name, p.height
                                        FROM users u
                                        JOIN patients p ON u.id = p.user_id
                                        WHERE u.name = ?', [$request->name]);
-            //return $usersPatients;
 
-            //$users = búsqueda combinada Users + Doctors
+            // Combined query Users + Doctors
             $usersDoctors = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, d.role_name, d.speciality
                                        FROM users u
                                        JOIN doctors d ON u.id = d.user_id
                                        WHERE u.name = ?', [$request->name]);
 
-            //$users = búsqueda combinada Users + OfficeStack
+            // Combined query Users + OfficeStaff
             $usersOfficeStack = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, o.role_name
                                        FROM users u
                                        JOIN office_stacks o ON u.id = o.user_id
                                        WHERE u.name = ?', [$request->name]);
 
-            //$users = búsqueda combinada Users + Admin
+            // Combined query Users + Admin
             $usersAdmin = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, a.role_name
                                        FROM users u
                                        JOIN admins a ON u.id = a.user_id
                                        WHERE u.name = ?', [$request->name]);
-            //
-            //Habría que agregar al array cada resultado
+
+            // Add each query result to an array
             $users = array_merge($usersPatients, $usersDoctors, $usersOfficeStack, $usersAdmin);
-            // Ordenar el array
+
+            // Sort the array
             // usort() compare function: Since several independent combined queries are made between User and every subtype table, and then the resulting arrays will be added to a single array, we will need to sort it by ID so that the client receives it ordered.
-            usort($users, function ($a, $b)              // Si pongo la función de comparación como función externa, dice que no encuentra el namespace... // https://stackoverflow.com/questions/38228477/php-usort-expects-parameter-2-to-be-a-valid-callback-not-in-a-class
+            usort($users, function ($a, $b)              // If I put the compare function as external function, it says it can't find the namespace... // https://stackoverflow.com/questions/38228477/php-usort-expects-parameter-2-to-be-a-valid-callback-not-in-a-class
                 {
                     if ($a->id == $b->id) {
                         return 0;
@@ -197,41 +171,40 @@ class UserController extends Controller
                 }
             );
             return $users;
-            //Si al final, el array está vacío (se puede verificar en el frontend), es que no se ha encontrado nada
+            // If finally, the array is empty, nothing has been found. In this case that is being verified in the frontend, it should be done here.
         }
 
         // Search by Surname
         if (!$request->name) {
-            //return 'Only surname';
 
-            //$users = búsqueda combinada Users + Patients
+            // Combined query Users + Patients
             $usersPatients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, p.role_name, p.height
                                        FROM users u
                                        JOIN patients p ON u.id = p.user_id
                                        WHERE u.surnames = ?', [$request->surname]);
-            //return $usersPatients;
 
-            //$users = búsqueda combinada Users + Doctors
+            // Combined query Users + Doctors
             $usersDoctors = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, d.role_name, d.speciality
                                        FROM users u
                                        JOIN doctors d ON u.id = d.user_id
                                        WHERE u.surnames = ?', [$request->surname]);
 
-            //$users = búsqueda combinada Users + OfficeStack
+            // Combined query Users + OfficeStack
             $usersOfficeStack = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, o.role_name
                                        FROM users u
                                        JOIN office_stacks o ON u.id = o.user_id
                                        WHERE u.surnames = ?', [$request->surname]);
 
-            //$users = búsqueda combinada Users + Admin
+            // Combined query Users + Admin
             $usersAdmin = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, a.role_name
                                        FROM users u
                                        JOIN admins a ON u.id = a.user_id
                                        WHERE u.surnames = ?', [$request->surname]);
-            //
-            //Habría que agregar al array cada resultado
+
+            // Add each query result to an array
             $users = array_merge($usersPatients, $usersDoctors, $usersOfficeStack, $usersAdmin);
-            // Ordenar el array
+
+            // Sort the array
             usort($users, function ($a, $b)
                 {
                     if ($a->id == $b->id) {
@@ -241,41 +214,39 @@ class UserController extends Controller
                 }
             );
             return $users;
-            //Si al final, el array está vacío (se puede verificar en el frontend), es que no se ha encontrado nada
         }
 
         // Search by Name & Surname
         if ($request->name && $request->surname) {
-            //return 'name & surname';
 
-            //$users = búsqueda combinada Users + Patients
+            // Combined query Users + Patients
             $usersPatients = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, p.role_name, p.height
                                        FROM users u
                                        JOIN patients p ON u.id = p.user_id
                                        WHERE u.name = ? AND u.surnames = ?', [$request->name, $request->surname]);
-            //return $usersPatients;
 
-            //$users = búsqueda combinada Users + Doctors
+            // Combined query Users + Doctors
             $usersDoctors = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, d.role_name, d.speciality
                                        FROM users u
                                        JOIN doctors d ON u.id = d.user_id
                                        WHERE u.name = ? AND u.surnames = ?', [$request->name, $request->surname]);
 
-            //$users = búsqueda combinada Users + OfficeStack
+            // Combined query Users + OfficeStack
             $usersOfficeStack = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, o.role_name
                                        FROM users u
                                        JOIN office_stacks o ON u.id = o.user_id
                                        WHERE u.name = ? AND u.surnames = ?', [$request->name, $request->surname]);
 
-            //$users = búsqueda combinada Users + Admin
+            // Combined query Users + Admin
             $usersAdmin = DB::select('SELECT u.id, u.image, u.name, u.surnames, u.birthdate, u.email, u.password, a.role_name
                                        FROM users u
                                        JOIN admins a ON u.id = a.user_id
                                        WHERE u.name = ? AND u.surnames = ?', [$request->name, $request->surname]);
-            //
-            //Habría que agregar al array cada resultado
+
+            // Add each query result to an array
             $users = array_merge($usersPatients, $usersDoctors, $usersOfficeStack, $usersAdmin);
-            // Ordenar el array
+
+            // Sort the array
             usort($users, function ($a, $b)
                 {
                     if ($a->id == $b->id) {
@@ -285,16 +256,9 @@ class UserController extends Controller
                 }
             );
             return $users;
-            //Si al final, el array está vacío (se puede verificar en el frontend), es que no se ha encontrado nada
         }
+    }
 
-    }
-    /*
-    public function show(User $user)
-    {
-        return $user;            // <<--  Objeto que el frontend recorre sus propiedades
-    }
-    */
     /**
      * Show the form for editing the specified resource.
      *
@@ -313,30 +277,25 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, $role)    // Aquí es rep per defecte $request i $id, on $id és necessari per a saber quin registre actualitzar. En aquest cas, segons el rol de l'usuari també necessitarem actualitzar alguna dada de les SubTaules d'Usuari. Encara que el rol el podiem haver rebut també en l'objecte $request, aquesta no és una dada per a actualitzar sino que ens serveix també com a identificador alternatiu per a saber en quina taula cal actualitzar les dades especialitzades del rol al qual pertany l'usuari.  Per tant, l'enviem també com a paràmetre en la ruta, de la mateixa manera que ho fem amb el mètode destroy().
+    public function update(Request $request, $id, $role)    // Here we get $request and $id, where $id is needed to know which record to update. In this case, depending on the role of the user, we will also need to update some data in the User SubTables. Although the role could also have been received in the $request object, this is not a data to update but serves as an alternative identifier to know in which table it is necessary to update the specialized data of the role to which the user belongs. Therefore, we also send it as a parameter in the route, just as we do in the destroy() method.
     {
-        //return $request->input('user_name');
-
-        ////////////////////////////////////////////////////////////////       // ***********
-
         // Handle File Upload
-        if( $request->hasFile('user_image') ){                                     // Verificamos si hay archivo, ya que puede ser que el usuario no haya adjuntado nada en el campo para archivo del formulario
+        if( $request->hasFile('user_image') ){                                     // Check if there is a file, in the edit form it is not mandatory
             // Get the filename with the extension, for example:   nameImage.jpg
             $fileNameWithExt = $request->file('user_image')->getClientOriginalName();
             // Get just filename, for example:   nameImage
-            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo()  es una función de PHP, no de Laravel. Extract the fileName without the extension
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
             // Get just extension, for example:   .jpg
             $extension = $request->file('user_image')->getClientOriginalExtension();
             // FileName to store
             $fileNameToStore = $fileName.'_'.time().'.'.$extension;
             // Upload image file to the destination folder
             $path = $request->file('user_image')->storeAs('public/images/patients', $fileNameToStore);
-        } // si el usuario no sube ninguna foto nueva en los datos de modificación, no vamos a poner la foto por defecto sino que debemos mantener la antigua.
+        } // If the user does not upload a new image in the update data, we will not set the default image but we must keep the old one.
 
-        ////////////////////////////////////////////////////////////////
 
-        // update en User con el ID
-        $affected = DB::table('users')       // $affected:  The number of rows affected by the statement will be returned
+        // Update User table with the ID
+        $affected = DB::table('users')
         ->where('id', '=', $id)
             ->update(
                 [
@@ -345,34 +304,31 @@ class UserController extends Controller
                     'birthdate' => $request->input('user_birthdate'),
                     'email' => $request->input('user_email'),
                     'password' => $request->input('user_password'),
-                    //'image' => $request->input('user_image'),               // *********
+                    //'image' => $request->input('user_image'),               // The image is only stored or updated in the Patient role
                 ]);
 
-        // si es Patient o Doctor, update en las tablas Patient o Doctor
+        // If the user is Patient or Doctor, update the Patient or Doctor tables (which are the only ones that have additional fields)
         if($role == 'Patient'){
-            //return 'The role is Patient!';
 
             $affected = DB::table('patients')
             ->where('user_id', '=', $id)
                 ->update(['height' => $request->input('patient_height')]);
 
-            // Si se ha subido una foto nueva del paciente, se actualiza el campo image del usuario paciente con el nuevo nombre de imagen
+            // If a new image of the patient has been uploaded, the image field of the patient user is updated with the new image name
             if( $request->hasFile('user_image') ){
-                // Primero borramos el archivo de imagen antiguo que pertenecía a este paciente
+                // First we delete the old image file that belonged to this patient
                 $user = User::find($id);
-                if($user->image != 'noImage.svg'){            // Solo borramos la imagen anterior que había si no era la imagen por defecto, ya que esa la usan otros registros
+                if($user->image != 'noImage.svg'){            // We only delete the previous image stored if it was not the default role image, since that is used by other records
                     // Delete image file
-                    Storage::delete('public/images/patients/'.$user->image);        // ruta   storage/app/public/images/patients/
+                    Storage::delete('public/images/patients/'.$user->image);        //  storage/app/public/images/
                 }
-                // A continuación actualizamos el valor del campo image del usuario paciente.
+                // Next we update the value of the image field of the patient user.
                 $affected = DB::table('users')
                 ->where('id', '=', $id)
                     ->update(['image' => $fileNameToStore ]);
             }
 
-            } else if ($role == 'Doctor'){
-            //return 'The role is Doctor!';
-
+        } else if ($role == 'Doctor'){
             $affected = DB::table('doctors')
                 ->where('user_id', '=', $id)
                 ->update(['speciality' => $request->input('doctor_specialty')] );
@@ -389,61 +345,49 @@ class UserController extends Controller
      */
     public function destroy($id, $role)
     {
-        //return 'UserController@destroy! - Role: ' . $role;
-
-        // Si no recibo el rol del usuario, aqui tendría que buscar en cada SubTipo de User si se encuentra el ID recibido, y si lo encuentra, borrar el registro en la tabla en la que se encuentre.
-        // Si hiciéramos que sea el Controlador del SubTipo el que se encargue de eso, el frontend tendría que hacer la petición a 4 posibles rutas diferentes según el rol, además de la de User.
-        // Si hacemos que se encargue UserController, si recibe el rol además del ID, solo tendrá que borrar en la tabla correspondiente del rol.
-        // Recuerda que además hay que borrar los registros que tenga asociados de otras tablas y hay que hacerlo por orden
+        /*
+        If I do not receive the role of the user, here I would have to search in each SubType of User if the received ID is found, and if it finds it, delete the record in the table in which it is found.
+        If we make the SubType Controller take care of that, the frontend would have to make the request to 4 different possible routes depending on the role, in addition to the User.
+        If we make the UserController take care of it, if it receives the role in addition to the ID, it will only have to delete in the corresponding table of the role.
+        Remember that it is also necessary to delete the records associated with it from other tables and it must be done in order.
+        */
 
         if($role == 'Patient'){
-            /*$patientTreatment = PatientTreatment::where($id);      // Eloquent ORM busca por defecto en la columna 'id', si la PK es otra hay que especificarlo en el modelo, pero no lo hago porque puedo tener otras consultas que queden afectadas.
+            /*$patientTreatment = PatientTreatment::where($id);      // Eloquent ORM searches by default in the 'id' column, if the PK is another it must be specified in the model, but I don't do it because I may have other queries that are affected.
             $patientTreatment->delete();*/
 
             $deleted = DB::delete('DELETE FROM patient_treatments WHERE patient_id = ?', [$id]);
-
-            /*$patientStates = PatientStates::where($id);
-            $patientStates->delete();*/
-
             $deleted = DB::delete('DELETE FROM patient_states WHERE patient_id = ?', [$id]);
-
-            /*$patient = Patient::find($id);
-            $patient->delete();*/
-
             $deleted = DB::delete('DELETE FROM patients WHERE user_id = ?', [$id]);
 
         } else if ($role == 'Doctor'){
-            /*$doctor = Doctor::find($id);
-            $doctor->delete();*/
             $deleted = DB::delete('DELETE FROM doctors WHERE user_id = ?', [$id]);
 
-            // Habría que borrar también el valor de la columna doctor del registro correspondiente de la tabla PatientTreatments
+            // The value of the doctor column of the corresponding record of the PatientTreatments table must also be deleted.
             $affected = DB::table('patient_treatments')
             ->where('doctor', '=', $id)
             ->update(['doctor' => null]);
 
         } else if($role == 'OfficeStack'){
-            /*$officeStack = OfficeStack::find($id);
-            $officeStack->delete();*/
             $deleted = DB::delete('DELETE FROM office_stacks WHERE user_id = ?', [$id]);
         } else if($role == 'Admin'){
-            /*$admin = Admin::find($id);
-            $admin->delete();*/
             $deleted = DB::delete('DELETE FROM admins WHERE user_id = ?', [$id]);
         }
 
-        // Borramos el token de sesión del usuario
+        // Delete the user's session token
         $deleted = DB::delete('DELETE FROM personal_access_tokens WHERE tokenable_id = ?', [$id]);
 
-        // Borramos el usuario
+        // Delete the user
         $user = User::find($id);
 
-        // Cuando vamos a eliminar el usuario hay que borrar también la imagen de usuario que este subió.
-        // Solo eliminaremos el archivo de imagen del paciente si este no es 'noImage.svg' o null.
-        // En los usuarios que no són pacientes es null, con lo cual, no tienen imagen asociada y entonces tampoco hay que borrar nada.
+        /*
+        When we are going to delete the user, we must also delete the user image that the user uploaded.
+        We will only delete the patient's image file if it is not 'noImage.svg' or null. In users who are not patients, it is null, which means that they do not have an associated image and therefore nothing has to be deleted.
+        */
+
         if($user->image != 'noImage.svg'){
             // Delete image file
-            Storage::delete('public/images/patients/'.$user->image);        // ruta   storage/app/public/images/patients/
+            Storage::delete('public/images/patients/'.$user->image);        //   storage/app/public/images/
         }
 
         $user->delete();

@@ -17,7 +17,6 @@ class CreateOfficeStacksTable extends Migration
             //$table->id();
             $table->foreignId('user_id')->primary()->references('id')->on('users');
                                      // ->constrained('users')
-
             $table->string('role_name');  $table->foreign('role_name')->references('name')->on('roles');
 
             $table->timestamps();

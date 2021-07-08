@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand />
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="73cf0c86-645d-4baa-822a-a3cafc83e991" name="Default Changelist" comment="" />
+    <list default="true" id="73cf0c86-645d-4baa-822a-a3cafc83e991" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AuthController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DietController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DietController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MedicationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MedicationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientStateController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientStateController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PatientTreatmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PatientTreatmentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PhysicalActivityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PhysicalActivityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/PatientState.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/PatientState.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/cors.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/cors.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_11_07_190322_create_office_stacks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_11_07_190322_create_office_stacks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_11_07_190340_create_admins_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_11_07_190340_create_admins_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_11_09_140230_create_patient_states_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_11_09_140230_create_patient_states_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,6 +43,9 @@
         <option value="composer.json" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -132,6 +161,7 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1k9dKaKu4q507FDbfL08blRPhR8" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -204,28 +234,39 @@
       <workItem from="1610444927646" duration="2970000" />
       <workItem from="1610730186367" duration="742000" />
       <workItem from="1613081109773" duration="16000" />
+      <workItem from="1625266843265" duration="686000" />
+      <workItem from="1625273874599" duration="10000" />
+      <workItem from="1625429494117" duration="3092000" />
+      <workItem from="1625436689168" duration="958000" />
+      <workItem from="1625527207769" duration="5308000" />
+      <workItem from="1625622028893" duration="1382000" />
+      <workItem from="1625657812783" duration="10828000" />
+      <workItem from="1625670184956" duration="16458000" />
+      <workItem from="1625707943610" duration="3408000" />
+      <workItem from="1625714855705" duration="14000" />
+      <workItem from="1625753423772" duration="4448000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="216" y="346" key="#SQL_Dialects" timestamp="1605238753625">
+    <state x="547" y="104" width="585" height="801" key="find.popup" timestamp="1625661944833">
       <screen x="0" y="0" width="1680" height="1010" />
     </state>
-    <state x="216" y="346" key="#SQL_Dialects/0.0.1680.1010@0.0.1680.1010" timestamp="1605238753625" />
-    <state x="570" y="260" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1608420231852">
-      <screen x="0" y="0" width="1680" height="1010" />
-    </state>
-    <state x="570" y="260" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1680.1010@0.0.1680.1010" timestamp="1608420231852" />
-    <state x="620" y="260" key="FileChooserDialogImpl" timestamp="1605397923248">
-      <screen x="0" y="0" width="1680" height="1010" />
-    </state>
-    <state x="620" y="260" key="FileChooserDialogImpl/0.0.1680.1010@0.0.1680.1010" timestamp="1605397923248" />
-    <state x="496" y="233" key="run.anything.popup" timestamp="1605702776880">
-      <screen x="0" y="0" width="1680" height="1010" />
-    </state>
-    <state x="496" y="233" key="run.anything.popup/0.0.1680.1010@0.0.1680.1010" timestamp="1605702776880" />
+    <state x="547" y="104" width="585" height="801" key="find.popup/0.0.1680.1010@0.0.1680.1010" timestamp="1625661944833" />
   </component>
 </project>

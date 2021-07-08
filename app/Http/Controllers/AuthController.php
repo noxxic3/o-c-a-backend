@@ -18,29 +18,30 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        //return $request;
-
         try {
-            /*    // Validación desde el backend de si los campos del formulario estaban vacíos. En nuestro caso se hace en el frontend.
+            /*
+            // Validation from the backend if the form fields were empty. In this case it is done on the frontend.
             $request->validate([
                 ‘email’ => ‘email|required’,
                 ‘password’ => ‘required’
             ]);
             */
 
-            // La autenticación consiste en:
-            //   1) Que exista el mail (identificador) que el usuario ha introducido, es decir, que esté registrado.
-            //   2) Que el password que ha introducido sea el correcto para ese identificador.
-            // Se podría buscar en la BD directamente por mail y password, pero en caso que no lo encuentre no sabríamos...
-            // ...si es porque el email no existe o si existe pero el password de este email no coincide con el recibido.
-            // Saber eso es necesario para poder enviar al frontend el mensaje de error correcto y que este informe al usuario.
+            /*
+            Authentication should check:
+            1) That the email (identifier) that the user has entered exists, that is, that the user is registered.
+            2) That the password entered is the correct one for that identifier.
+            We could search the database directly by email and password, but in case the user is not found, we wouldn't know
+            if the user is not found because the email does not exist or if the email exists but the password of this email does not match the one received.
+            Knowing this is necessary to be able to send the correct error message to the frontend.
+            */
 
-            // 1)
+            // STEP 1)
 
             /*
             $credentials = request(['email', 'password']);
-            if (!Auth::attempt($credentials)) {                   // Auth Facade  // attempt() method:  https://laravel.com/docs/8.x/authentication#authenticating-users  se encarga de buscar el usuario por el email y por el password pero creo que lo busca encriptado, se tiene que guardar encriptado durante el registro.  The attempt method will return true if authentication was successful. Otherwise, false will be returned.
-                return response()->json([                                         // Es decir, attempt() accede a la tabla Users, y por lo tanto, invoca a la clase User?
+            if (!Auth::attempt($credentials)) {                   // Auth Facade  // attempt() method:  https://laravel.com/docs/8.x/authentication#authenticating-users   is in charge of looking for the user by email and by password but I think it looks for it encrypted, it has to be stored encrypted during registration.  The attempt method will return true if authentication was successful. Otherwise, false will be returned.
+                return response()->json([                                         // That is, attempt() accesses the Users table, and therefore invokes the User class?
                     'status_code' => 401,
                     'message' => 'Unauthorized kkk'
                 ]);
@@ -54,30 +55,35 @@ class AuthController extends Controller
                 ]);
             }
 
-            // 2)
+            // STEP 2)
 
-            /*if ( ! Hash::check($request->password, $user->password, [])) {          // Hash::check()  creo que verifica los passwords encriptados
-                throw new Exception('Error in Login');                                        // En el ejemplo original pone   throw new \Exception, si lo hace así no hace falta poner  use Exception  arriba.   https://stackoverflow.com/questions/41415095/exception-class-not-found-in-laravel
+            /*if ( ! Hash::check($request->password, $user->password, [])) {          // Hash::check()  i think it verifies the passwords but encrypted
+                throw new Exception('Error in Login');
             }*/
             if ($user->password != $request->password){
                 throw new Exception('Error in Login');
             }
 
-            // Aquí ya se deben de haber ejecutado todas las validaciones de autenticación...
-            // ...para estar seguros que si llega a esta parte del código el usuario existe y su password es correcto.
+            /*
+            Here all the authentication validations must have already been executed. In this part of the code, the user exists and his password is correct.
+            */
 
-            // Se genera el token para el usuario.
-            //  ->createToken() lo crea y lo guarda en la tabla  personal_access_tokens,
-            // donde tokenable_type y tokenable_id apuntan a la tabla e id correspondientes.
+            /*
+            Now the token is generated for the user.
+            ->createToken() create it and save it in the personal_access_tokens table
+            where tokenable_type and tokenable_id point to the corresponding table and id of the token owner.
+            */
 
             $tokenResult = $user->createToken('authToken')->plainTextToken;
 
-            // Buscamos ahora los datos de las tablas asociadas a User para poder enviar al frontend los datos necesarios.
-            // En este caso solo hay que mirar en qué tabla subtipo de User se encuentra el usuario.
+            /*
+            We now look for the data from the tables associated with User (User subtypes) in order to send the necessary data to the frontend.
+            In this case, we just need to find at which User subtype table the user is in.
+            */
             $user_subtype = Patient::where('user_id', $user->id)->first();
-            if(!$user_subtype){
+            if (!$user_subtype){
                 $user_subtype = Doctor::where('user_id', $user->id)->first();
-            }                                                                  // Poner un  else if  aquí ya no funcionaría porque la condición es la misma en todos y si se ha ejecutado ya el primer  if  , entonces los otros  else  ya no se ejecutan.
+            }
             if (!$user_subtype){
                 $user_subtype = OfficeStack::where('user_id', $user->id)->first();
             }
@@ -85,7 +91,7 @@ class AuthController extends Controller
                 $user_subtype = Admin::where('user_id', $user->id)->first();
             }
 
-            // Retornamos los datos necesarios del usuario autenticado al frontend.
+            // Return the necessary data of the authenticated user to the frontend.
             return response()->json([
                 'status_code' => 200,
                 'access_token' => $tokenResult,
@@ -94,7 +100,7 @@ class AuthController extends Controller
                 'user_subtype' => $user_subtype,
             ]);
 
-        } catch (Exception $error) {              // Si se genera una Exception en el bloque try{}...
+        } catch (Exception $error) {              // If an Exception is thrown in the try(){} block...
             return response()->json([
                 'status_code' => 403,
                 'message' => 'Error in Login. Incorrect password',
@@ -103,9 +109,9 @@ class AuthController extends Controller
         }
     }
 
-    public function logout($id)                  // logout() no es para eliminar al usuario, eso lo hace el método destroy() del UserController.
-    {                                            // logout() solo elimina el token para cerrar sesión del usuario, que el token ya no sea válido en el backend.
-        //return 'ID del usuario a borrar su token: '. $id;
+    public function logout($id)                  // logout() is not used to remove the user, that is done by the destroy() method of the UserController.
+    {                                            // logout() just remove the token to log out the user, it makes the token no longer valid in the backend.
+        // Delete the user's token
         $deleted = DB::delete('DELETE FROM personal_access_tokens WHERE tokenable_id = ?', [$id]);
     }
 

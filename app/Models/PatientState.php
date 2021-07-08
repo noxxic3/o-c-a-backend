@@ -19,7 +19,7 @@ class PatientState extends Model
         Route::bind('patientstate', function ($value) {       // Route Model Bindings: bind a parameter (patientstate) to a model (App\Models\PatientState)
             $patientstates = App\Models\PatientState::where('patient_id', $value)->get();
             return $patientstates;
-            return "Fuck!";
+            return "Patient states parameter";
         });
     }
     */

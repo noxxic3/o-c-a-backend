@@ -15,7 +15,7 @@ class CreatePersonalAccessTokensTable extends Migration
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->morphs('tokenable');     // Esto són 2 columnas:  tokenable_type  y  tokenable_id, en la primera se pone la ruta de la clase a la que pertenece la instancia que ejecuta la función  createToken(), y en la segunda se pone el ID de la tabla Users que corresponde a la instancia. por lo tanto, tokenable_id funciona como FK, en este caso a Users.
+            $table->morphs('tokenable');     // Create 2 columns: tokenable_type and tokenable_id
             $table->string('name');
             $table->string('token', 64)->unique();
             $table->text('abilities')->nullable();

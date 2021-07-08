@@ -39,11 +39,11 @@ class MedicationController extends Controller
     {
 
         // Handle File Upload
-        if( $request->hasFile('image') ){                                     // Verificamos si hay archivo, aunque en este caso es obligatiorio.
+        if( $request->hasFile('image') ){                                     // Check if there is a file, although in the store form is mandatory.
             // Get the filename with the extension, for example:   nameImage.jpg
             $fileNameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename, for example:   nameImage
-            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo()  es una función de PHP, no de Laravel. Extract the fileName without the extension
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo() is PHP, not Laravel. Extract the fileName without the extension
             // Get just extension, for example:   .jpg
             $extension = $request->file('image')->getClientOriginalExtension();
             // FileName to store
@@ -59,8 +59,6 @@ class MedicationController extends Controller
         $medication->image = $fileNameToStore;  //$request->input('image');
         $medication->posology = $request->input('description');
         $medication->save();
-
-
     }
 
     /**
@@ -96,37 +94,36 @@ class MedicationController extends Controller
     {
 
         // Handle File Upload
-        if( $request->hasFile('image') ){                                     // Verificamos si hay archivo, en el formulario de edición no es obligatorio
+        if( $request->hasFile('image') ){                                     // Check if there is a file, in the edit form it is not mandatory.
             // Get the filename with the extension, for example:   nameImage.jpg
             $fileNameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename, for example:   nameImage
-            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo()  es una función de PHP, no de Laravel. Extract the fileName without the extension
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);          // pathinfo() is PHP, not Laravel. Extract the fileName without the extension
             // Get just extension, for example:   .jpg
             $extension = $request->file('image')->getClientOriginalExtension();
             // FileName to store
             $fileNameToStore = $fileName.'_'.time().'.'.$extension;
             // Upload image file to the destination folder
-            $path = $request->file('image')->storeAs('public/images/treatments', $fileNameToStore);  // <-- Guarda archivo
+            $path = $request->file('image')->storeAs('public/images/treatments', $fileNameToStore);  // Store file
         }
 
         $medication = Medication::find($id);
         $medication->name = $request->input('name');
         $medication->posology = $request->input('description');
 
-        // Si ha subido imagen nueva...
+        // If a new image has been uploaded...
         if( $request->hasFile('image') ) {
-            // Eliminamos la anterior que había
-            if($medication->image != 'image-solid.svg'){   // Solo borramos la imagen anterior que había si no era la imagen por defecto, ya que esa la usan otros registros
+            // Delete the previous image stored
+            if($medication->image != 'image-solid.svg'){   // We only delete the previous image stored if it was not the default image, since that is shared by other records
                 // Delete image file
-                Storage::delete('public/images/treatments/'.$medication->image);        // ruta   storage/app/public/images/patients/
+                Storage::delete('public/images/treatments/'.$medication->image);       //   storage/app/public/images/
             }
-            // A continuación actualizamos el valor del campo image del usuario paciente.
+            // Next, we update the value of the image field of the table.
             $medication->image = $fileNameToStore;
         }
 
-        // Si no ha subido archivo de imagen nuevo, el campo  $___>image  se deja tal cual
+        // If the user has not uploaded a new image file, the $___->image field is left as is
         $medication->save();
-
     }
 
     /**

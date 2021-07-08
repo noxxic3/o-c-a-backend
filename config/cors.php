@@ -15,14 +15,18 @@ return [
     |
     */
 
-    'paths' => ['*'],           // Aquí está configurado ya para todas las rutas api/...   OJO, api/ no es el archivo api.php.
-                                    // Recuerda que las rutas que configuramos en web.php se invocan   www.dominio.com/index.php
-                                    // ...mientras que las rutas que configuramos en api.php se invocan   www.dominio.com/api/index.php 
-                                    // Por lo tanto, si quiero asignar el CORS también a las rutas de web.php, debo poner ['*'] y no ['web/*'], ya que no existe ninguna ruta  www.dominio.com/web/...   a no ser que la creemos explícitamente.
+    'paths' => ['*'],
+    /*
+    Here CORS is already configured for all ('*')  web (/) and  api (api/) paths. NOTE, api/ is not the api.php file.
+    This 'paths' configuration would affect in this way:   www.domain.com/*
+    Remember that the routes that we configure in web.php are invoked www.domain.com/index.php
+    ... while the routes that we configure in api.php are invoked     www.domain.com/api/index.php
+    Therefore, if I want to assign CORS only to api.php paths, I should put ['api/*'].
+    */
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],              // ['http://localhost:8080', '*']
+    'allowed_origins' => ['*'],              // ['http://localhost:8080', '*']       // http://localhost:8080  is the local frontend
 
     'allowed_origins_patterns' => [],
 

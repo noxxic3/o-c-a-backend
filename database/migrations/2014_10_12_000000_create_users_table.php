@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
                 $table->string('surnames');
                 $table->string('birthdate');
-                $table->string('image')->nullable();             // <<-- Ruta de la imagen, las notícias se supone que se introducen directamente al servidor HTTP + SGBD.
+                $table->string('image')->nullable();             // <<-- When uploading a user image the path is saved in this field. If it doesn't upload, the frontend shows one by default.
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

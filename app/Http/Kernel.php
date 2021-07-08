@@ -14,8 +14,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Fruitcake\Cors\HandleCors::class,            // <<<-----------  Fruitcake CORS package ya instalado
-        // como asigno este middleware HandleCors CORS a las rutas y no el que yo creé? Se debe de poner como primer elemento del array $middleware (sino no funcionará).
+        \Fruitcake\Cors\HandleCors::class,            // Fruitcake CORS package already installed
+        // To assign this HandleCors CORS global middleware to the routes, it must be put as the first element of the array $middleware (otherwise it will not work).
 
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
@@ -66,6 +66,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        //'mycors' => \App\Http\Middleware\Cors::class,          // <<<-----   CORS que yo creé
+        //'mycors' => \App\Http\Middleware\Cors::class,          // CORS I created
     ];
 }
