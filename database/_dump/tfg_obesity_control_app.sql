@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 08, 2021 at 07:55 PM
+-- Generation Time: Jul 23, 2021 at 03:07 AM
 -- Server version: 8.0.20
 -- PHP Version: 7.4.2
 
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `medications` (
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `posology` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `medications`
@@ -222,9 +222,7 @@ CREATE TABLE IF NOT EXISTS `office_stacks` (
 --
 
 INSERT INTO `office_stacks` (`user_id`, `role_name`, `created_at`, `updated_at`) VALUES
-(40, 'OfficeStack', '2020-12-16 19:12:53', '2020-12-16 19:12:53'),
-(39, 'OfficeStack', '2020-12-16 18:17:06', '2020-12-16 18:17:06'),
-(41, 'OfficeStack', '2020-12-16 19:45:14', '2020-12-16 19:45:14');
+(39, 'OfficeStack', '2020-12-16 18:17:06', '2020-12-16 18:17:06');
 
 -- --------------------------------------------------------
 
@@ -263,7 +261,6 @@ CREATE TABLE IF NOT EXISTS `patients` (
 
 INSERT INTO `patients` (`user_id`, `height`, `role_name`, `created_at`, `updated_at`) VALUES
 (1, 40.00, 'Patient', NULL, NULL),
-(42, 40.00, 'Patient', '2020-12-23 11:02:59', '2020-12-23 11:02:59'),
 (37, 40.03, 'Patient', '2020-12-12 16:14:15', '2020-12-12 16:14:15');
 
 -- --------------------------------------------------------
@@ -351,7 +348,7 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=230 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=244 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -422,7 +419,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
