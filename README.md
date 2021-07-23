@@ -6,52 +6,65 @@ This is the backend repository for the Obesity Control App project.
 Obesity Control App is a personal project that consists of a web application for a supposed obesity clinic interested in providing obesity treatments to its patients.
 
 The application allows:
-- That patients enter weekly data on their physical state and can consult the treatment that is being assigned to these states.
-- That doctors can assign treatments to the physical states of patients who have not yet been assigned treatment, as well as search for patients to consult their history of states.
-- That the office staff can manage the users of the application.
-- That the administrator can do the same tasks as doctors and office personnel, and also be able to manage the treatments offered by the entity.
+- That **patients** enter weekly data on their physical state and can consult the treatment that is being assigned to these states.
+- That **doctors** can assign treatments to the physical states of patients who have not yet been assigned treatment, as well as search for patients to consult their history of states.
+- That the **office staff** can manage the users of the application.
+- That the **administrator** can do the same tasks as doctors and office personnel, and also be able to manage the treatments offered by the entity.
 
 The backend is an API RESTful developed with <a href="https://laravel.com/" target="_blank"> <img src="public/favicon.ico"> </a> version **8**, to which any frontend can be connected through its endpoints.
 The frontend is in this [repository](https://github.com/noxxic3/o-c-a-frontend).
 
 ## Project Set Up
 
-### Installation & Set Up
-
-1. Install Vue CLI
+* Install dependencies
 ```
-npm install -g @vue/cli
+composer install
 ```
 
-2. Install dependencies
+* Create the `.env` file
 ```
-npm install
-```
-
-3. Compiles and hot-reloads for development
-```
-npm run serve
+cp .env.example .env
 ```
 
-### Building for Production
-
-1. Generate production build
+* Generate an app encryption key
 ```
-npm run build
+php artisan key:generate
 ```
 
+* Create an empty database (the project currently uses MySQL)
+
+* Add database information in the `.env` file
+```
+DB_CONNECTION=mysql
+DB_HOST=
+DB_PORT=
+DB_DATABASE=your_db_name
+DB_USERNAME=
+DB_PASSWORD=
+```
+
+* Import in the previously created database the `.sql` dump file located in the directory `/database/_dump`.
+
+* Create the symlink from `/public` to  `/storage/app/public/`.
+```
+php artisan storage:link
+```
+
+* Add in the folder `/storage/app/public/` the directory that contains the initial image files.
+
+
+<!---
 ### Endpoints (API REST routes)
 
-Listar las rutas? No sé si es necesario porque sería una lista larga y además, estas ya están en el frontend.
+List the routes? It would be a long list and also, these are already on the frontend.
+-->
 
-
-
-
+<!---
 ## Contribution (Forking)
-De momento nada
+-->
 
 ## Licensing
-De momento nada
+This project is licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT license</a>.  
 
 ### Credits
 This project includes graphic resources taken from the following sites: 
